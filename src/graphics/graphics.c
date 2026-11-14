@@ -251,6 +251,7 @@ void graphics_draw_hud(float player_x, float player_z,
     draw_text(17, 45, "CLUES", 1, 0xffa9c4cc);
     snprintf(count_text, sizeof(count_text), "%02d", interactions);
     draw_text(43, 45, count_text, 1, 0xfff0dfb4);
+    flush_hud_text();
 
     /* Minimap */
     draw_rect(386, 10, 470, 94, 0xe0182028);
