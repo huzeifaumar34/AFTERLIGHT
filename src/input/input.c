@@ -18,13 +18,14 @@ InputState input_poll(void) {
     if (pad.Buttons & PSP_CTRL_DOWN) state.move_y = 1;
 
     if (pad.Buttons & PSP_CTRL_CROSS) state.confirm = 1;
-    if (pad.Buttons & PSP_CTRL_CIRCLE) state.cancel = 1;
-    if (pad.Buttons & PSP_CTRL_START) state.quit = 1;
+    if (pad.Buttons & PSP_CTRL_TRIANGLE) state.cancel = 1;
+    if (pad.Buttons & PSP_CTRL_CIRCLE) state.quit = 1;
 
-    if (pad.Buttons & PSP_CTRL_ANALUP) state.move_y = -1;
-    if (pad.Buttons & PSP_CTRL_ANALDOWN) state.move_y = 1;
-    if (pad.Buttons & PSP_CTRL_ANALLEFT) state.move_x = -1;
-    if (pad.Buttons & PSP_CTRL_ANALRIGHT) state.move_x = 1;
+    /* Analog stick threshold avoids accidental drift. */
+    if (pad.Lx < 96) state.move_x = -1;
+    else if (pad.Lx > 160) state.move_x = 1;
+    if (pad.Ly < 96) state.move_y = -1;
+    else if (pad.Ly > 160) state.move_y = 1;
 
     return state;
 }
