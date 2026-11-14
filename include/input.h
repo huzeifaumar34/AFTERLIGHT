@@ -6,6 +6,7 @@ typedef struct {
     int move_y;
     int confirm;
     int cancel;
+    int start;
     int quit;
 } InputState;
 

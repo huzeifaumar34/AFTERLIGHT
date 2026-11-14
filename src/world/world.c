@@ -2,6 +2,7 @@
 
 #include "graphics.h"
 #include "mission.h"
+#include "dialogue.h"
 #include "world.h"
 
 typedef struct {
@@ -35,7 +36,8 @@ static PointOfInterest points[] = {
     {-9.0f,  3.4f, "FISH MARKET", 0},
     { 9.0f, -5.6f, "OLD TOWN", 0},
     {12.1f,  7.0f, "FERRY DOCK", 0},
-    {11.7f, -7.7f, "SIGNAL TOWER", 0}
+    {11.7f, -7.7f, "SIGNAL TOWER", 0},
+    {-5.2f, 5.0f, "MARA", 0}
 };
 
 static float player_x = 0.0f;
@@ -91,6 +93,7 @@ void world_init(void) {
     nearby_point = -1;
     last_collected_point = -1;
     mission_init();
+    dialogue_init();
     interaction_count = mission_get_clue_count();
     for (i = 0; i < POINT_COUNT; ++i) {
         points[i].discovered = (i < 4) ? mission_has_clue((int)i) :
@@ -134,10 +137,12 @@ void world_update(float delta_seconds, const InputState *input) {
                 last_collected_point = nearby_point;
                 interaction_count = mission_get_clue_count();
             }
-        } else {
+        } else if (nearby_point == 4) {
             mission_interact_with_tower();
             /* Remember the tower response so the HUD can display it. */
             points[nearby_point].discovered = 1;
+        } else {
+            dialogue_interact();
         }
     }
     previous_confirm = input->confirm;
@@ -171,6 +176,15 @@ static void draw_tree(float x, float z) {
 static void draw_street_lamp(float x, float z) {
     graphics_draw_box(x, 1.45f, z, 0.16f, 2.9f, 0.16f, 0xff333d43);
     graphics_draw_box(x, 2.92f, z, 0.74f, 0.22f, 0.42f, 0xffd9c58c);
+}
+
+static void draw_mara(void) {
+    /* Mara's silhouette: rust-coloured coat and dark hair. */
+    graphics_draw_box(-5.2f, 0.82f, 5.0f, 0.62f, 1.05f, 0.42f, 0xff8a5548);
+    graphics_draw_box(-5.2f, 1.58f, 5.0f, 0.44f, 0.46f, 0.42f, 0xff9c705d);
+    graphics_draw_box(-5.2f, 1.83f, 5.0f, 0.48f, 0.16f, 0.45f, 0xff302a29);
+    graphics_draw_box(-5.55f, 0.83f, 5.0f, 0.2f, 0.78f, 0.24f, 0xff8a5548);
+    graphics_draw_box(-4.85f, 0.83f, 5.0f, 0.2f, 0.78f, 0.24f, 0xff8a5548);
 }
 
 static void draw_player(void) {
@@ -239,6 +253,7 @@ void world_render(void) {
     draw_street_lamp(-3.2f, -7.0f);
     draw_street_lamp(3.2f, -7.0f);
 
+    draw_mara();
     draw_player();
 }
 
@@ -253,6 +268,7 @@ int world_get_interaction_count(void) {
 
 int world_is_nearby(void) {
     if (nearby_point < 0) return 0;
+    if (nearby_point == 5) return 3;
     if (nearby_point == 4 && mission_is_complete()) return 2;
     if (nearby_point < 4 && points[nearby_point].discovered) return 2;
     return 1;
@@ -260,9 +276,30 @@ int world_is_nearby(void) {
 
 const char *world_get_nearby_name(void) {
     if (nearby_point < 0) return 0;
+    if (nearby_point == 5) return "MARA";
     if (nearby_point == 4 && points[nearby_point].discovered) return mission_get_last_message();
     if (nearby_point < 4 && points[nearby_point].discovered &&
         nearby_point == last_collected_point) return mission_get_last_message();
     if (nearby_point < 4 && points[nearby_point].discovered) return "CLUE FOUND";
     return points[nearby_point].name;
+}
+
+int world_dialogue_is_active(void) {
+    return dialogue_is_active();
+}
+
+const char *world_dialogue_get_line(void) {
+    return dialogue_get_line();
+}
+
+const char *world_dialogue_get_speaker(void) {
+    return dialogue_get_speaker();
+}
+
+int world_dialogue_get_line_index(void) {
+    return dialogue_get_line_index();
+}
+
+int world_dialogue_get_line_count(void) {
+    return dialogue_get_line_count();
 }

@@ -10,5 +10,10 @@ void world_get_player_position(float *x, float *z);
 int world_get_interaction_count(void);
 int world_is_nearby(void);
 const char *world_get_nearby_name(void);
+int world_dialogue_is_active(void);
+const char *world_dialogue_get_line(void);
+const char *world_dialogue_get_speaker(void);
+int world_dialogue_get_line_index(void);
+int world_dialogue_get_line_count(void);
 
 #endif

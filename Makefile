@@ -1,5 +1,5 @@
 TARGET = AFTERLIGHT
-OBJS = src/main.o src/core/game.o src/graphics/graphics.o src/gameplay/mission.o src/input/input.o src/world/world.o
+OBJS = src/main.o src/core/game.o src/graphics/graphics.o src/gameplay/mission.o src/gameplay/dialogue.o src/input/input.o src/world/world.o
 
 INCDIR = include
 CFLAGS = -O2 -G0 -Wall -Wextra -std=c99

@@ -8,7 +8,7 @@ void input_init(void) {
 
 InputState input_poll(void) {
     SceCtrlData pad;
-    InputState state = {0, 0, 0, 0, 0};
+    InputState state = {0, 0, 0, 0, 0, 0};
 
     pad.Buttons = 0;
     pad.Lx = 128;
@@ -22,7 +22,8 @@ InputState input_poll(void) {
 
     if (pad.Buttons & PSP_CTRL_CROSS) state.confirm = 1;
     if (pad.Buttons & PSP_CTRL_TRIANGLE) state.cancel = 1;
-    if (pad.Buttons & PSP_CTRL_START) state.quit = 1;
+    if (pad.Buttons & PSP_CTRL_START) state.start = 1;
+    if (pad.Buttons & PSP_CTRL_CIRCLE) state.quit = 1;
 
     /* The analog stick takes priority over the digital pad. */
     if (pad.Lx < 96) state.move_x = -1;

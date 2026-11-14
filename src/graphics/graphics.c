@@ -276,7 +276,9 @@ void graphics_draw_hud(float player_x, float player_z,
     /* Bottom mission / controls strip */
     draw_rect(10, 248, 470, 268, 0xe0182028);
     hud_vertex_count = 0;
-    if (nearby > 1 && nearby_name) {
+    if (nearby == 3) {
+        snprintf(prompt, sizeof(prompt), "X TALK TO MARA");
+    } else if (nearby > 1 && nearby_name) {
         snprintf(prompt, sizeof(prompt), "CLUE %s", nearby_name);
     } else if (nearby && nearby_name) {
         snprintf(prompt, sizeof(prompt), "X INVESTIGATE %s", nearby_name);
@@ -285,6 +287,74 @@ void graphics_draw_hud(float player_x, float player_z,
     }
     draw_text(17, 254, prompt, 1, 0xfff0dfb4);
     draw_text(376, 254, "START EXIT", 1, 0xffd2e2e8);
+    flush_hud_text();
+    sceGuEnable(GU_DEPTH_TEST);
+}
+
+
+void graphics_draw_menu(int page, int selection) {
+    sceGuDisable(GU_DEPTH_TEST);
+    sceGumMatrixMode(GU_PROJECTION);
+    sceGumLoadIdentity();
+    sceGumOrtho(0.0f, (float)SCREEN_WIDTH,
+                (float)SCREEN_HEIGHT, 0.0f, -1.0f, 1.0f);
+    sceGumMatrixMode(GU_VIEW);
+    sceGumLoadIdentity();
+    sceGumMatrixMode(GU_MODEL);
+    sceGumLoadIdentity();
+
+    draw_rect(42, 30, 438, 244, 0xff111b24);
+    draw_rect(54, 42, 426, 232, 0xff26343b);
+    hud_vertex_count = 0;
+
+    if (page == 0) {
+        draw_text(113, 62, "AFTERLIGHT", 3, 0xfff0dfb4);
+        draw_text(166, 103, "NAMBARA", 2, 0xffd2e2e8);
+        draw_text(135, 131, "THE COAST REMEMBERS", 1, 0xffa9c4cc);
+        draw_text(112, 158 + selection * 21, ">", 2, 0xff62f0d0);
+        draw_text(139, 158, "CONTINUE", 2, selection == 0 ? 0xfff0dfb4 : 0xffa9c4cc);
+        draw_text(139, 179, "CONTROLS", 2, selection == 1 ? 0xfff0dfb4 : 0xffa9c4cc);
+        draw_text(139, 200, "EXIT", 2, selection == 2 ? 0xfff0dfb4 : 0xffa9c4cc);
+    } else if (page == 1) {
+        draw_text(164, 59, "CONTROLS", 2, 0xfff0dfb4);
+        draw_text(98, 103, "DPAD MOVE ELIAS", 2, 0xffd2e2e8);
+        draw_text(98, 129, "X INVESTIGATE OR TALK", 2, 0xffd2e2e8);
+        draw_text(98, 155, "START PAUSE GAME", 2, 0xffd2e2e8);
+        draw_text(98, 181, "O RETURN TO TITLE", 2, 0xffd2e2e8);
+        draw_text(145, 211, "X OR TRIANGLE BACK", 1, 0xff62f0d0);
+    } else {
+        draw_text(179, 65, "PAUSED", 3, 0xfff0dfb4);
+        draw_text(112, 130 + selection * 25, ">", 2, 0xff62f0d0);
+        draw_text(139, 130, "RESUME", 2, selection == 0 ? 0xfff0dfb4 : 0xffa9c4cc);
+        draw_text(139, 155, "MAIN MENU", 2, selection == 1 ? 0xfff0dfb4 : 0xffa9c4cc);
+        draw_text(139, 180, "EXIT", 2, selection == 2 ? 0xfff0dfb4 : 0xffa9c4cc);
+    }
+    draw_text(170, 220, "X SELECT", 1, 0xffa9c4cc);
+    flush_hud_text();
+    sceGuEnable(GU_DEPTH_TEST);
+}
+
+void graphics_draw_dialogue(const char *speaker, const char *line,
+                            int line_index, int line_count) {
+    char progress[16];
+    sceGuDisable(GU_DEPTH_TEST);
+    sceGumMatrixMode(GU_PROJECTION);
+    sceGumLoadIdentity();
+    sceGumOrtho(0.0f, (float)SCREEN_WIDTH,
+                (float)SCREEN_HEIGHT, 0.0f, -1.0f, 1.0f);
+    sceGumMatrixMode(GU_VIEW);
+    sceGumLoadIdentity();
+    sceGumMatrixMode(GU_MODEL);
+    sceGumLoadIdentity();
+
+    draw_rect(14, 178, 466, 260, 0xff101820);
+    draw_rect(19, 183, 461, 255, 0xff303b41);
+    hud_vertex_count = 0;
+    draw_text(31, 191, speaker ? speaker : "UNKNOWN", 2, 0xffe6bd72);
+    draw_text(31, 213, line ? line : "", 1, 0xfff4f0e7);
+    snprintf(progress, sizeof(progress), "%d %d", line_index + 1, line_count);
+    draw_text(386, 192, progress, 1, 0xffa9c4cc);
+    draw_text(335, 238, "X NEXT", 1, 0xff62f0d0);
     flush_hud_text();
     sceGuEnable(GU_DEPTH_TEST);
 }

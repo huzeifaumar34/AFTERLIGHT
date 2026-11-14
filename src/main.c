@@ -53,10 +53,10 @@ int main(void) {
 
         previous_tick = current_tick;
         input = input_poll();
-        if (input.quit) running = 0;
 
         game_update(delta_seconds, &input);
         game_render();
+        if (input.quit || game_wants_exit()) running = 0;
         sceDisplayWaitVblankStart();
     }
 
