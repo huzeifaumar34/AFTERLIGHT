@@ -136,7 +136,8 @@ void world_update(float delta_seconds, const InputState *input) {
             }
         } else {
             mission_interact_with_tower();
-            points[nearby_point].discovered = mission_is_complete();
+            /* Remember the tower response so the HUD can display it. */
+            points[nearby_point].discovered = 1;
         }
     }
     previous_confirm = input->confirm;
@@ -259,7 +260,7 @@ int world_is_nearby(void) {
 
 const char *world_get_nearby_name(void) {
     if (nearby_point < 0) return 0;
-    if (nearby_point == 4 && mission_is_complete()) return mission_get_last_message();
+    if (nearby_point == 4 && points[nearby_point].discovered) return mission_get_last_message();
     if (nearby_point < 4 && points[nearby_point].discovered &&
         nearby_point == last_collected_point) return mission_get_last_message();
     if (nearby_point < 4 && points[nearby_point].discovered) return "CLUE FOUND";
