@@ -2,11 +2,30 @@
 
 An original open-world 3D homebrew game for the PlayStation Portable (PSP), designed to run in PPSSPP.
 
-**Current status:** foundation / prototype stage. This repository is the start of development, not a finished game. The first milestone is a reproducible PSP homebrew build and a small playable vertical slice.
+**Current status:** first 3D vertical-slice prototype. The CI build produces an EBOOT.PBP; PPSSPP play-testing and further gameplay work are still required.
 
 ## Premise
 
 Nambara is a fictional coastal city. Elias returns home after his brother disappears and discovers that a powerful organization has been controlling the city from the shadows. The player explores districts, talks to characters, follows clues and gradually uncovers what happened.
+
+## Current prototype
+
+The first explorable coastal block now contains:
+- A third-person follow camera and a low-poly player character (Elias).
+- A small island district with roads, water, buildings, a ferry pier, a beacon tower, trees and street lamps.
+- Basic collision against buildings and the edge of the district.
+- Four points of interest. Walk close to one and press **X** to collect its clue.
+- A minimap and a compact on-screen status display.
+
+This is still a grey-box prototype. The buildings and character are made from simple coloured boxes; there are no final character models, textures, voice acting or finished story missions yet.
+
+## Controls
+
+| PSP control | Action |
+|---|---|
+| D-pad / analog stick | Move Elias |
+| X (Cross) | Investigate a nearby point of interest |
+| Start | Exit the prototype |
 
 ## Target and technology
 
@@ -22,13 +41,12 @@ This is an original project. It is not affiliated with or derived from any comme
 ## Repository layout
 
 ```
-include/                 Public game headers
+include/                 Public game and engine headers
 src/core/                Startup, game loop and timing
-src/graphics/            GU setup and rendering helpers
-src/gameplay/            Player and gameplay systems
+src/graphics/            GU setup, 3D primitives and HUD
 src/input/               Controller input
-src/world/               World and scene scaffolding
-assets/                  Placeholder location for original game assets
+src/world/               District, player movement and interactions
+assets/                  Reserved for original game assets
 .github/workflows/       Automated build workflow
 Makefile                 PSPSDK build
 ```
@@ -38,20 +56,20 @@ Makefile                 PSPSDK build
 Install a working PSPSDK toolchain and ensure `psp-config`, `psp-gcc` and `make` are on PATH, then run:
 
 ```sh
+make clean
 make
 ```
 
-The expected output is `EBOOT.PBP` in the project root. The GitHub Actions workflow builds the same target in CI. A successful CI build is not a substitute for testing the resulting EBOOT in PPSSPP or on hardware.
+The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds the same target in CI. A successful CI build confirms compilation and packaging; it does not replace testing the EBOOT in PPSSPP or on PSP hardware.
 
 ## Development milestones
 
-1. Buildable PSP application and CI.
-2. Stable frame loop, input and basic GU rendering.
-3. Player movement and camera.
-4. Small explorable Nambara test district.
-5. Interactions, dialogue and mission framework.
-6. Save/load, audio and performance pass.
-7. Playable story slice and PPSSPP regression testing.
+1. Buildable PSP application and CI. **Done.**
+2. GU/GUM 3D scene, follow camera, movement and HUD. **In progress.**
+3. A more complete explorable district with improved collision and props.
+4. Interaction, dialogue and mission framework.
+5. Save/load, audio, original assets and performance pass.
+6. Playable story slice and PPSSPP regression testing.
 
 ## Contributing
 

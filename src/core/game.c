@@ -1,41 +1,32 @@
-#include <pspdebug.h>
-
 #include "game.h"
+#include "graphics.h"
 #include "world.h"
 
-static float game_time = 0.0f;
-static unsigned int frame_count = 0;
-
 void game_init(void) {
-    game_time = 0.0f;
-    frame_count = 0;
+    graphics_init();
     world_init();
 }
 
 void game_update(float delta_seconds, const InputState *input) {
     if (delta_seconds < 0.0f) delta_seconds = 0.0f;
-    if (delta_seconds > 0.1f) delta_seconds = 0.1f;
-
-    game_time += delta_seconds;
-    frame_count++;
+    if (delta_seconds > 0.08f) delta_seconds = 0.08f;
     world_update(delta_seconds, input);
 }
 
 void game_render(void) {
-    pspDebugScreenSetXY(0, 0);
-    pspDebugScreenSetTextColor(0xFFFFFFFF);
-    pspDebugScreenPrintf("AFTERLIGHT: NAMBARA\n");
-    pspDebugScreenSetTextColor(0xFFB8D8E8);
-    pspDebugScreenPrintf("A PSP homebrew project\n\n");
-    pspDebugScreenSetTextColor(0xFFFFFFFF);
-    pspDebugScreenPrintf("NAMBARA // PROTOTYPE BUILD\n");
-    pspDebugScreenPrintf("--------------------------\n");
-    pspDebugScreenPrintf("The coast remembers.\n\n");
+    float player_x;
+    float player_z;
+
+    world_get_player_position(&player_x, &player_z);
+    graphics_begin(player_x, player_z);
     world_render();
-    pspDebugScreenPrintf("\n\nTime: %.1f s   Frames: %u\n", game_time, frame_count);
-    pspDebugScreenPrintf("\nD-pad / analog: move marker\nX: interact   O: quit\n");
+    graphics_draw_hud(player_x, player_z,
+                      world_get_interaction_count(),
+                      world_is_nearby(),
+                      world_get_nearby_name());
+    graphics_end();
 }
 
 void game_shutdown(void) {
-    /* Reserved for releasing game resources. */
+    graphics_shutdown();
 }
