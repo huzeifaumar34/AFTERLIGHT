@@ -1,0 +1,29 @@
+name: PSP Homebrew Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: pspdev/pspdev:latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Build EBOOT.PBP
+        run: |
+          make clean || true
+          make
+      - name: Upload PSP build
+        uses: actions/upload-artifact@v4
+        with:
+          name: AFTERLIGHT-PSP
+          path: |
+            EBOOT.PBP
+            AFTERLIGHT.elf
+          if-no-files-found: error
