@@ -276,7 +276,9 @@ void graphics_draw_hud(float player_x, float player_z,
     /* Bottom mission / controls strip */
     draw_rect(10, 248, 470, 268, 0xe0182028);
     hud_vertex_count = 0;
-    if (nearby && nearby_name) {
+    if (nearby > 1 && nearby_name) {
+        snprintf(prompt, sizeof(prompt), "CLUE %s", nearby_name);
+    } else if (nearby && nearby_name) {
         snprintf(prompt, sizeof(prompt), "X INVESTIGATE %s", nearby_name);
     } else {
         snprintf(prompt, sizeof(prompt), "EXPLORE THE COAST FIND THE SIGNAL");

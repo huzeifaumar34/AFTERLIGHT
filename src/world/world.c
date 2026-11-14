@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "graphics.h"
+#include "mission.h"
 #include "world.h"
 
 typedef struct {
@@ -33,7 +34,8 @@ static PointOfInterest points[] = {
     {-9.0f, -5.6f, "PORT OFFICE", 0},
     {-9.0f,  3.4f, "FISH MARKET", 0},
     { 9.0f, -5.6f, "OLD TOWN", 0},
-    {12.1f,  7.0f, "FERRY DOCK", 0}
+    {12.1f,  7.0f, "FERRY DOCK", 0},
+    {11.7f, -7.7f, "SIGNAL TOWER", 0}
 };
 
 static float player_x = 0.0f;
@@ -42,6 +44,7 @@ static float walk_phase = 0.0f;
 static int previous_confirm = 0;
 static int interaction_count = 0;
 static int nearby_point = -1;
+static int last_collected_point = -1;
 
 #define BUILDING_COUNT (sizeof(buildings) / sizeof(buildings[0]))
 #define POINT_COUNT (sizeof(points) / sizeof(points[0]))
@@ -87,6 +90,8 @@ void world_init(void) {
     previous_confirm = 0;
     interaction_count = 0;
     nearby_point = -1;
+    last_collected_point = -1;
+    mission_init();
     for (i = 0; i < POINT_COUNT; ++i) points[i].discovered = 0;
 }
 
@@ -120,9 +125,15 @@ void world_update(float delta_seconds, const InputState *input) {
 
     update_nearby_point();
     if (input->confirm && !previous_confirm && nearby_point >= 0) {
-        if (!points[nearby_point].discovered) {
-            points[nearby_point].discovered = 1;
-            interaction_count++;
+        if (nearby_point < 4) {
+            if (mission_collect_clue(nearby_point)) {
+                points[nearby_point].discovered = 1;
+                last_collected_point = nearby_point;
+                interaction_count = mission_get_clue_count();
+            }
+        } else {
+            mission_interact_with_tower();
+            points[nearby_point].discovered = mission_is_complete();
         }
     }
     previous_confirm = input->confirm;
@@ -237,11 +248,17 @@ int world_get_interaction_count(void) {
 }
 
 int world_is_nearby(void) {
-    return nearby_point >= 0;
+    if (nearby_point < 0) return 0;
+    if (nearby_point == 4 && mission_is_complete()) return 2;
+    if (nearby_point < 4 && points[nearby_point].discovered) return 2;
+    return 1;
 }
 
 const char *world_get_nearby_name(void) {
     if (nearby_point < 0) return 0;
-    if (points[nearby_point].discovered) return "CLUE FOUND";
+    if (nearby_point == 4 && mission_is_complete()) return mission_get_last_message();
+    if (nearby_point < 4 && points[nearby_point].discovered &&
+        nearby_point == last_collected_point) return mission_get_last_message();
+    if (nearby_point < 4 && points[nearby_point].discovered) return "CLUE FOUND";
     return points[nearby_point].name;
 }
