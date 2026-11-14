@@ -88,11 +88,14 @@ void world_init(void) {
     player_z = 6.0f;
     walk_phase = 0.0f;
     previous_confirm = 0;
-    interaction_count = 0;
     nearby_point = -1;
     last_collected_point = -1;
     mission_init();
-    for (i = 0; i < POINT_COUNT; ++i) points[i].discovered = 0;
+    interaction_count = mission_get_clue_count();
+    for (i = 0; i < POINT_COUNT; ++i) {
+        points[i].discovered = (i < 4) ? mission_has_clue((int)i) :
+                               mission_is_complete();
+    }
 }
 
 void world_update(float delta_seconds, const InputState *input) {
