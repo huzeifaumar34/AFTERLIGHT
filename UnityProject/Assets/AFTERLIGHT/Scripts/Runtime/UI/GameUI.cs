@@ -9,6 +9,7 @@ namespace Afterlight
     {
         private Canvas canvas;
         private Font font;
+        private Sprite uiSprite;
         private PlayerMotor player;
         private MissionManager mission;
 
@@ -55,7 +56,8 @@ namespace Afterlight
             if (messageTimer > 0f)
             {
                 messageTimer -= Time.deltaTime;
-                if (messageTimer <= 0f && messageText) messageText.gameObject.SetActive(false);
+                if (messageTimer <= 0f && messageText)
+                    messageText.transform.parent.gameObject.SetActive(false);
             }
 
             if (playing && Input.GetKeyDown(KeyCode.Escape))
@@ -74,6 +76,8 @@ namespace Afterlight
         {
             var canvasObject = new GameObject("AFTERLIGHT / Screen UI");
             canvasObject.transform.SetParent(transform, false);
+            uiSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 2, 2), new Vector2(0.5f, 0.5f), 100f);
+            uiSprite.name = "AFTERLIGHT / white UI sprite";
             canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.pixelPerfect = false;
@@ -94,7 +98,10 @@ namespace Afterlight
             rect.anchorMax = anchorMax;
             rect.sizeDelta = size;
             rect.anchoredPosition = anchoredPosition;
-            go.GetComponent<Image>().color = color;
+            var image = go.GetComponent<Image>();
+            image.sprite = uiSprite;
+            image.type = Image.Type.Simple;
+            image.color = color;
             return go;
         }
 
@@ -132,6 +139,8 @@ namespace Afterlight
             rect.sizeDelta = size;
             rect.anchoredPosition = Vector2.zero;
             var image = go.GetComponent<Image>();
+            image.sprite = uiSprite;
+            image.type = Image.Type.Simple;
             image.color = new Color(0.13f, 0.19f, 0.20f, 0.92f);
             var button = go.GetComponent<Button>();
             button.targetGraphic = image;
@@ -222,8 +231,13 @@ namespace Afterlight
 
         private void BuildHud()
         {
-            hudPanel = new GameObject("Gameplay HUD");
+            hudPanel = new GameObject("Gameplay HUD", typeof(RectTransform));
             hudPanel.transform.SetParent(canvas.transform, false);
+            var hudRect = (RectTransform)hudPanel.transform;
+            hudRect.anchorMin = Vector2.zero;
+            hudRect.anchorMax = Vector2.one;
+            hudRect.offsetMin = Vector2.zero;
+            hudRect.offsetMax = Vector2.zero;
 
             var objectivePanel = Panel("Objective panel", hudPanel.transform,
                 new Color(0.035f, 0.055f, 0.065f, 0.84f),
