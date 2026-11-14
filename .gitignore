@@ -6,3 +6,16 @@
 EBOOT.PBP
 PARAM.SFO
 build/
+
+# Unity generated folders
+UnityProject/Library/
+UnityProject/Temp/
+UnityProject/Obj/
+UnityProject/Builds/
+UnityProject/Logs/
+UnityProject/UserSettings/
+UnityProject/.vs/
+UnityProject/.idea/
+UnityProject/*.csproj
+UnityProject/*.sln
+UnityProject/Packages/packages-lock.json
