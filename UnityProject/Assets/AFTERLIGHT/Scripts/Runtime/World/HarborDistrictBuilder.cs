@@ -414,7 +414,7 @@ namespace Afterlight
             Vector3 b = position + new Vector3(width * 0.5f, 0, 0);
             Vector3 c = position + new Vector3(width * 0.5f, -0.25f, 0.85f);
             Vector3 d = position + new Vector3(-width * 0.5f, -0.25f, 0.85f);
-            MeshFactory.AddQuad(v, t, a, b, c, d);
+            MeshFactory.AddQuad(v, t, a, d, c, b);
             MeshFactory.MeshObject("Canvas market awning", MeshFactory.BuildMesh("Awning", v, t),
                 coral, parent);
             for (int i = 0; i < 8; i++)
@@ -461,8 +461,8 @@ namespace Afterlight
             var deckV = new List<Vector3>();
             var deckT = new List<int>();
             MeshFactory.AddQuad(deckV, deckT,
-                new Vector3(12f, 0.48f, 5.1f), new Vector3(24f, 0.48f, 5.1f),
-                new Vector3(24f, 0.48f, 10.4f), new Vector3(12f, 0.48f, 10.4f));
+                new Vector3(12f, 0.48f, 5.1f), new Vector3(12f, 0.48f, 10.4f),
+                new Vector3(24f, 0.48f, 10.4f), new Vector3(24f, 0.48f, 5.1f));
             MeshFactory.MeshObject("Pier timber deck", MeshFactory.BuildMesh("Pier deck", deckV, deckT),
                 timber, harbour.transform, true);
 
@@ -801,7 +801,7 @@ namespace Afterlight
             var marker = MeshFactory.MeshObject("Subtle investigation marker",
                 MeshFactory.CreateTorus(0.42f, 0.025f, 20, 6), gold, clue.transform);
             marker.transform.localPosition = new Vector3(0, 0.02f, 0);
-            marker.transform.localRotation = Quaternion.Euler(90f, 0, 0);
+            marker.transform.localRotation = Quaternion.identity;
 
             var interactable = clue.AddComponent<ClueInteractable>();
             interactable.Configure(mission, index, label, message);

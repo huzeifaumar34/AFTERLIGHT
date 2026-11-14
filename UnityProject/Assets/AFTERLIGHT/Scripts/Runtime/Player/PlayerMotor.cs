@@ -47,8 +47,12 @@ namespace Afterlight
             if (!controlsEnabled || inputLocked) return;
 
             Vector2 stick = joystick != null ? joystick.Direction : Vector2.zero;
-            float horizontal = Mathf.Clamp(Input.GetAxisRaw("Horizontal") + stick.x, -1f, 1f);
-            float vertical = Mathf.Clamp(Input.GetAxisRaw("Vertical") + stick.y, -1f, 1f);
+            float keyboardX = (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) ? 1f : 0f)
+                - (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) ? 1f : 0f);
+            float keyboardY = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ? 1f : 0f)
+                - (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) ? 1f : 0f);
+            float horizontal = Mathf.Clamp(keyboardX + stick.x, -1f, 1f);
+            float vertical = Mathf.Clamp(keyboardY + stick.y, -1f, 1f);
             Vector3 input = new Vector3(horizontal, 0f, vertical);
 
             if (input.sqrMagnitude > 1f) input.Normalize();

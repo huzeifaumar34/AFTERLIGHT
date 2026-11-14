@@ -144,7 +144,8 @@ namespace Afterlight
             {
                 int a = i * 2;
                 int c = ((i + 1) % segments) * 2;
-                triangles.Add(bottomCenter); triangles.Add(c); triangles.Add(a);
+                // Bottom cap faces down; top cap faces up.
+                triangles.Add(bottomCenter); triangles.Add(a); triangles.Add(c);
                 triangles.Add(topCenter); triangles.Add(c + 1); triangles.Add(a + 1);
             }
             return BuildMesh("Tapered cylinder", vertices, triangles);
@@ -172,8 +173,9 @@ namespace Afterlight
                 {
                     int a = i * (minorSegments + 1) + j;
                     int b = a + minorSegments + 1;
-                    triangles.Add(a); triangles.Add(b); triangles.Add(a + 1);
-                    triangles.Add(a + 1); triangles.Add(b); triangles.Add(b + 1);
+                    // Keep the torus outer normals facing away from its centre.
+                    triangles.Add(a); triangles.Add(a + 1); triangles.Add(b);
+                    triangles.Add(a + 1); triangles.Add(b + 1); triangles.Add(b);
                 }
             }
             return BuildMesh("Torus", vertices, triangles);

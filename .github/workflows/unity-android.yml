@@ -13,10 +13,63 @@ on:
       - '.github/workflows/unity-android.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
+  project-preflight:
+    name: Validate Unity project layout
+    runs-on: ubuntu-latest
+    outputs:
+      project_valid: ${{ steps.validate.outputs.valid }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate project metadata and source layout
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f UnityProject/ProjectSettings/ProjectVersion.txt
+          grep -q 'm_EditorVersion: 6000.3.27f2' UnityProject/ProjectSettings/ProjectVersion.txt
+          python3 -m json.tool UnityProject/Packages/manifest.json >/dev/null
+          test -f UnityProject/Assets/Editor/AfterlightBuild.cs
+          grep -q 'BuildAndroid' UnityProject/Assets/Editor/AfterlightBuild.cs
+          test -f UnityProject/Assets/AFTERLIGHT/Scripts/Runtime/AfterlightBootstrap.cs
+          test -f UnityProject/Assets/AFTERLIGHT/Scripts/Runtime/World/HarborDistrictBuilder.cs
+          test -f UnityProject/Assets/AFTERLIGHT/Scripts/Runtime/UI/GameUI.cs
+          source_count=$(find UnityProject/Assets -type f -name '*.cs' | wc -l)
+          test "$source_count" -ge 10
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+          echo "Unity project preflight passed: $source_count C# source files found."
+
+  license-check:
+    name: Check Unity Personal license
+    runs-on: ubuntu-latest
+    needs: project-preflight
+    outputs:
+      license_ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - name: Check whether UNITY_LICENSE is configured
+        id: check
+        shell: bash
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ -n "$UNITY_LICENSE" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Unity license secret found."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::APK build skipped. Configure UNITY_LICENSE in repository Actions secrets after completing the Unity Personal activation workflow."
+          fi
+
   build-android:
     name: Build AFTERLIGHT for Android
     runs-on: ubuntu-latest
+    needs: [ project-preflight, license-check ]
+    if: needs.project-preflight.outputs.project_valid == 'true' && needs.license-check.outputs.license_ready == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
