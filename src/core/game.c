@@ -1,5 +1,4 @@
 #include <pspdebug.h>
-#include <stdio.h>
 
 #include "game.h"
 #include "world.h"
@@ -13,16 +12,13 @@ void game_init(void) {
     world_init();
 }
 
-void game_update(float delta_seconds) {
-    if (delta_seconds < 0.0f) {
-        delta_seconds = 0.0f;
-    }
-    if (delta_seconds > 0.1f) {
-        delta_seconds = 0.1f;
-    }
+void game_update(float delta_seconds, const InputState *input) {
+    if (delta_seconds < 0.0f) delta_seconds = 0.0f;
+    if (delta_seconds > 0.1f) delta_seconds = 0.1f;
+
     game_time += delta_seconds;
     frame_count++;
-    world_update(delta_seconds);
+    world_update(delta_seconds, input);
 }
 
 void game_render(void) {
