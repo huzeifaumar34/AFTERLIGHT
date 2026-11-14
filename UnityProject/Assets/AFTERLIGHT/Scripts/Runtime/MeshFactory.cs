@@ -106,8 +106,8 @@ namespace Afterlight
                 {
                     int a = ring * (segments + 1) + segment;
                     int b = a + segments + 1;
-                    triangles.Add(a); triangles.Add(b); triangles.Add(a + 1);
-                    triangles.Add(a + 1); triangles.Add(b); triangles.Add(b + 1);
+                    triangles.Add(a); triangles.Add(a + 1); triangles.Add(b);
+                    triangles.Add(a + 1); triangles.Add(b + 1); triangles.Add(b);
                 }
             }
             return BuildMesh("Ellipsoid", vertices, triangles);
@@ -145,7 +145,7 @@ namespace Afterlight
                 int a = i * 2;
                 int c = ((i + 1) % segments) * 2;
                 triangles.Add(bottomCenter); triangles.Add(c); triangles.Add(a);
-                triangles.Add(topCenter); triangles.Add(a + 1); triangles.Add(c + 1);
+                triangles.Add(topCenter); triangles.Add(c + 1); triangles.Add(a + 1);
             }
             return BuildMesh("Tapered cylinder", vertices, triangles);
         }
@@ -228,7 +228,7 @@ namespace Afterlight
             AddTriangle(vertices, triangles, bowTop, keelBow, rightMid);
             AddQuad(vertices, triangles, rightMid, keelBow, keelStern, sternTopR);
             AddTriangle(vertices, triangles, sternTopL, sternTopR, keelStern);
-            AddQuad(vertices, triangles, bowTop, sternTopR, sternTopL, bowTop);
+            AddTriangle(vertices, triangles, bowTop, sternTopR, sternTopL);
             return BuildMesh("Boat hull", vertices, triangles);
         }
 
