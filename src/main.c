@@ -2,7 +2,6 @@
 #include <pspdebug.h>
 #include <pspdisplay.h>
 #include <pspctrl.h>
-#include <stdio.h>
 
 #include "game.h"
 #include "input.h"
@@ -38,8 +37,7 @@ static void setup_callbacks(void) {
 }
 
 int main(void) {
-    sceCtrlSetSamplingCycle(0);
-    sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
+    input_init();
     pspDebugScreenInit();
     setup_callbacks();
     game_init();
@@ -58,7 +56,7 @@ int main(void) {
             running = 0;
         }
 
-        game_update(delta_seconds);
+        game_update(delta_seconds, &input);
         game_render();
         sceDisplayWaitVblankStart();
     }
