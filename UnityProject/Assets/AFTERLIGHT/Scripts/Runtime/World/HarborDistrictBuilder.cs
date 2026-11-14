@@ -99,7 +99,7 @@ namespace Afterlight
             for (int i = 0; i < segments; i++)
             {
                 int next = (i + 1) % segments;
-                triangles.Add(0); triangles.Add(1 + i); triangles.Add(1 + next);
+                triangles.Add(0); triangles.Add(1 + next); triangles.Add(1 + i);
             }
 
             for (int ring = 1; ring < rings; ring++)
@@ -113,8 +113,8 @@ namespace Afterlight
                     int b = innerStart + next;
                     int c = outerStart + i;
                     int d = outerStart + next;
-                    triangles.Add(a); triangles.Add(c); triangles.Add(b);
-                    triangles.Add(b); triangles.Add(c); triangles.Add(d);
+                    triangles.Add(a); triangles.Add(b); triangles.Add(c);
+                    triangles.Add(b); triangles.Add(d); triangles.Add(c);
                 }
             }
 
@@ -137,9 +137,9 @@ namespace Afterlight
             var t = new List<int>();
             MeshFactory.AddQuad(v, t,
                 new Vector3(-width * 0.5f, y, -depth * 0.5f),
-                new Vector3(width * 0.5f, y, -depth * 0.5f),
+                new Vector3(-width * 0.5f, y, depth * 0.5f),
                 new Vector3(width * 0.5f, y, depth * 0.5f),
-                new Vector3(-width * 0.5f, y, depth * 0.5f));
+                new Vector3(width * 0.5f, y, -depth * 0.5f));
             return MeshFactory.BuildMesh("Horizontal surface", v, t);
         }
 
@@ -158,8 +158,8 @@ namespace Afterlight
             for (int i = 0; i < segments; i++)
             {
                 int a = i * 2;
-                t.Add(a); t.Add(a + 1); t.Add(a + 2);
-                t.Add(a + 2); t.Add(a + 1); t.Add(a + 3);
+                t.Add(a); t.Add(a + 2); t.Add(a + 1);
+                t.Add(a + 2); t.Add(a + 3); t.Add(a + 1);
             }
             return MeshFactory.BuildMesh("Shoreline ring", v, t);
         }
@@ -236,7 +236,7 @@ namespace Afterlight
             var strip = MeshFactory.MeshObject(name,
                 MeshFactory.CreateTaperedCylinder(radius, radius, delta.magnitude, 8),
                 material, parent);
-            strip.transform.position = (start + end) * 0.5f;
+            strip.transform.position = start;
             strip.transform.rotation = Quaternion.FromToRotation(Vector3.up, delta.normalized);
             strip.transform.localScale = new Vector3(1f, 1f, 1f);
         }
@@ -581,9 +581,8 @@ namespace Afterlight
             var t = new List<int>();
             MeshFactory.AddTriangle(v, t, start, middle + side, middle - side);
             MeshFactory.AddTriangle(v, t, middle - side, end, middle + side);
-            var leaf = MeshFactory.MeshObject("Palm leaf blade", MeshFactory.BuildMesh("Palm frond", v, t),
+            MeshFactory.MeshObject("Palm leaf blade", MeshFactory.BuildMesh("Palm frond", v, t),
                 palmLeaf, parent);
-            leaf.AddComponent<MeshCollider>().convex = true;
         }
 
         private static void CreateBroadleaf(Transform parent, Vector3 position, float scale)
@@ -751,20 +750,11 @@ namespace Afterlight
             var towerPoint = new GameObject("Signal tower investigation point");
             towerPoint.transform.SetParent(root, false);
             towerPoint.transform.localPosition = new Vector3(20f, 0.4f, -12.6f);
-            var towerInteract = towerPoint.AddComponent<ClueInteractable>();
-            towerInteract.Configure(mission, 4, "Signal tower", "The signal activates. Chapter One is complete.");
             var sphere = towerPoint.AddComponent<SphereCollider>();
             sphere.isTrigger = true;
             sphere.radius = 2.3f;
-            // MissionManager only has four clue slots: the lighthouse is a separate finale.
             var finale = towerPoint.AddComponent<SignalTowerInteractable>();
             finale.Configure(mission);
-            DestroyClueComponent(towerPoint, towerInteract);
-        }
-
-        private static void DestroyClueComponent(GameObject target, ClueInteractable component)
-        {
-            Object.Destroy(component);
         }
 
         private static void CreateClue(Transform root, MissionManager mission, int index,
@@ -839,7 +829,7 @@ namespace Afterlight
             Vector3 delta = end - start;
             var beam = MeshFactory.MeshObject(name,
                 MeshFactory.CreateTaperedCylinder(radius, radius * 0.9f, 1f, 8), material, parent);
-            beam.transform.localPosition = (start + end) * 0.5f;
+            beam.transform.localPosition = start;
             beam.transform.localRotation = Quaternion.FromToRotation(Vector3.up, delta.normalized);
             beam.transform.localScale = new Vector3(1f, delta.magnitude, 1f);
         }
