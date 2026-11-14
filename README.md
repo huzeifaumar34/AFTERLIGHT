@@ -2,7 +2,7 @@
 
 An original open-world 3D homebrew game for the PlayStation Portable (PSP), designed to run in PPSSPP.
 
-**Current status:** first 3D vertical-slice prototype. The CI build produces an EBOOT.PBP; PPSSPP play-testing and further gameplay work are still required.
+**Current status:** first playable-slice prototype under development. GitHub Actions builds an EBOOT.PBP. Testing the latest build in PPSSPP or on PSP hardware is still required.
 
 ## Premise
 
@@ -10,14 +10,15 @@ Nambara is a fictional coastal city. Elias returns home after his brother disapp
 
 ## Current prototype
 
-The first explorable coastal block now contains:
-- A third-person follow camera and a low-poly player character (Elias).
-- A small island district with roads, water, buildings, a ferry pier, a beacon tower, trees and street lamps.
-- Basic collision against buildings and the edge of the district.
-- Four points of interest. Walk close to one and press **X** to collect its clue.
-- A minimap and a compact on-screen status display.
+The first coastal district is a low-poly 3D test environment featuring:
+- A third-person follow camera and a simple player character (Elias).
+- Water, an island block, roads, buildings, a ferry pier, a signal tower, trees and street lamps.
+- Movement using the D-pad or analog stick, with basic collision against buildings and the district boundary.
+- Four clue locations: port office, fish market, old town and ferry dock.
+- A signal-tower finale that becomes available after the four clues are found.
+- A minimap, clue counter and on-screen investigation messages.
 
-This is still a grey-box prototype. The buildings and character are made from simple coloured boxes; there are no final character models, textures, voice acting or finished story missions yet.
+The environment and player are currently made from coloured geometric primitives. Final character models, textures, animation, audio, save/load and the full story are not implemented yet.
 
 ## Controls
 
@@ -41,8 +42,9 @@ This is an original project. It is not affiliated with or derived from any comme
 ## Repository layout
 
 ```
-include/                 Public game and engine headers
-src/core/                Startup, game loop and timing
+include/                 Public game, graphics and mission headers
+src/core/                Startup and game loop
+src/gameplay/            Mission and investigation state
 src/graphics/            GU setup, 3D primitives and HUD
 src/input/               Controller input
 src/world/               District, player movement and interactions
@@ -60,20 +62,20 @@ make clean
 make
 ```
 
-The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds the same target in CI. A successful CI build confirms compilation and packaging; it does not replace testing the EBOOT in PPSSPP or on PSP hardware.
+The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds the same target and stores the result as an `AFTERLIGHT-PSP` artifact. A successful CI build confirms compilation and packaging; it does not replace testing the EBOOT in PPSSPP or on PSP hardware.
 
 ## Development milestones
 
-1. Buildable PSP application and CI. **Done.**
-2. GU/GUM 3D scene, follow camera, movement and HUD. **In progress.**
-3. A more complete explorable district with improved collision and props.
-4. Interaction, dialogue and mission framework.
-5. Save/load, audio, original assets and performance pass.
-6. Playable story slice and PPSSPP regression testing.
+1. Buildable PSP application and continuous integration. **Done.**
+2. GU/GUM 3D scene, follow camera, movement and HUD. **Prototype implemented; emulator test pending.**
+3. Explorable coastal district, basic collision and props. **First block implemented.**
+4. Four-clue investigation mission and signal-tower chapter finale. **Prototype implemented.**
+5. Dialogue expansion, persistent save/load, original assets and audio.
+6. Larger districts, mission progression, performance pass and story-slice testing.
 
 ## Contributing
 
-Keep systems small and modular. Prefer original, optimized assets suitable for PSP memory and performance limits. Document controls and test changes in PPSSPP whenever possible.
+Keep systems small and modular. Prefer original, optimized assets suitable for PSP memory and performance limits. Test changes in PPSSPP whenever possible.
 
 ## License
 
