@@ -3,11 +3,13 @@
 
 static int marker_x = 18;
 static int marker_y = 5;
+static int previous_confirm = 0;
 static unsigned int interaction_count = 0;
 
 void world_init(void) {
     marker_x = 18;
     marker_y = 5;
+    previous_confirm = 0;
     interaction_count = 0;
 }
 
@@ -23,7 +25,8 @@ void world_update(float delta_seconds, const InputState *input) {
     if (marker_y < 0) marker_y = 0;
     if (marker_y > 12) marker_y = 12;
 
-    if (input->confirm) interaction_count++;
+    if (input->confirm && !previous_confirm) interaction_count++;
+    previous_confirm = input->confirm;
 }
 
 void world_render(void) {
