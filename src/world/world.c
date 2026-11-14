@@ -111,6 +111,13 @@ void world_update(float delta_seconds, const InputState *input) {
     if (delta_seconds < 0.0f) delta_seconds = 0.0f;
     if (delta_seconds > 0.08f) delta_seconds = 0.08f;
 
+    /* Lock movement while a conversation is open; X advances the line. */
+    if (dialogue_is_active()) {
+        if (input->confirm && !previous_confirm) dialogue_interact();
+        previous_confirm = input->confirm;
+        return;
+    }
+
     dx = (float)input->move_x;
     dz = (float)input->move_y;
     length_squared = dx * dx + dz * dz;

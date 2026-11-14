@@ -311,7 +311,7 @@ void graphics_draw_menu(int page, int selection) {
         draw_text(113, 62, "AFTERLIGHT", 3, 0xfff0dfb4);
         draw_text(166, 103, "NAMBARA", 2, 0xffd2e2e8);
         draw_text(135, 131, "THE COAST REMEMBERS", 1, 0xffa9c4cc);
-        draw_text(112, 158 + selection * 21, ">", 2, 0xff62f0d0);
+        draw_text(112, 158 + selection * 21, "1", 2, 0xff62f0d0);
         draw_text(139, 158, "CONTINUE", 2, selection == 0 ? 0xfff0dfb4 : 0xffa9c4cc);
         draw_text(139, 179, "CONTROLS", 2, selection == 1 ? 0xfff0dfb4 : 0xffa9c4cc);
         draw_text(139, 200, "EXIT", 2, selection == 2 ? 0xfff0dfb4 : 0xffa9c4cc);
@@ -324,7 +324,7 @@ void graphics_draw_menu(int page, int selection) {
         draw_text(145, 211, "X OR TRIANGLE BACK", 1, 0xff62f0d0);
     } else {
         draw_text(179, 65, "PAUSED", 3, 0xfff0dfb4);
-        draw_text(112, 130 + selection * 25, ">", 2, 0xff62f0d0);
+        draw_text(112, 130 + selection * 25, "1", 2, 0xff62f0d0);
         draw_text(139, 130, "RESUME", 2, selection == 0 ? 0xfff0dfb4 : 0xffa9c4cc);
         draw_text(139, 155, "MAIN MENU", 2, selection == 1 ? 0xfff0dfb4 : 0xffa9c4cc);
         draw_text(139, 180, "EXIT", 2, selection == 2 ? 0xfff0dfb4 : 0xffa9c4cc);
