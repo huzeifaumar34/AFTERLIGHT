@@ -18,7 +18,7 @@ The first coastal district is a low-poly 3D test environment featuring:
 - A signal-tower finale that becomes available after the four clues are found.
 - A minimap, clue counter and on-screen investigation messages.
 
-The environment and player are currently made from coloured geometric primitives. Final character models, textures, animation, audio, save/load and the full story are not implemented yet.
+The environment and player are currently made from coloured geometric primitives. Final character models, textures, animation, audio, player-position saving and the full story are not implemented yet. The four clue flags and chapter-one completion are automatically saved to the Memory Stick when storage is available.
 
 ## Controls
 
@@ -62,7 +62,7 @@ make clean
 make
 ```
 
-The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds the same target and stores the result as an `AFTERLIGHT-PSP` artifact. A successful CI build confirms compilation and packaging; it does not replace testing the EBOOT in PPSSPP or on PSP hardware.
+The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds the same target and stores the result as an `AFTERLIGHT-PSP` artifact. The game stores mission progress at `ms0:/PSP/SAVEDATA/AFTERLIGHT.DAT` when the emulated or physical Memory Stick is writable. A successful CI build confirms compilation and packaging; it does not replace testing the EBOOT or save file in PPSSPP or on PSP hardware.
 
 ## Development milestones
 
@@ -70,8 +70,9 @@ The expected output is `EBOOT.PBP` in the project root. GitHub Actions builds th
 2. GU/GUM 3D scene, follow camera, movement and HUD. **Prototype implemented; emulator test pending.**
 3. Explorable coastal district, basic collision and props. **First block implemented.**
 4. Four-clue investigation mission and signal-tower chapter finale. **Prototype implemented.**
-5. Dialogue expansion, persistent save/load, original assets and audio.
-6. Larger districts, mission progression, performance pass and story-slice testing.
+5. Automatic mission-progress save/load using a versioned file and checksum. **Code implemented; PPSSPP storage test pending.**
+6. Dialogue expansion, player-position saves, original assets and audio.
+7. Larger districts, mission progression, performance pass and story-slice testing.
 
 ## Contributing
 
